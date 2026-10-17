@@ -1,0 +1,96 @@
+FUNCIONAMIENTO DE LA APLICACION
+================================
+
+OBJETIVO
+--------
+El proyecto genera nueve escenas Manim para el video educativo
+"La integral mas alla del area". Explica como una tasa de descarga,
+r(t) = 2 + 0.5t MB/s, produce una cantidad acumulada al multiplicarse por
+intervalos de tiempo y sumarse. Para el intervalo de 0 a 10 segundos, la
+integral exacta es 45 MB.
+
+ORGANIZACION Y DEPENDENCIAS
+---------------------------
+La aplicacion sigue una arquitectura por capas. Las dependencias apuntan
+desde la presentacion hacia el interior:
+
+1. domain/
+   Contiene la matematica pura. RateFunction y TimeInterval son valores
+   inmutables; riemann.py calcula sumas exactas y integral.py integra tasas
+   afines. units.py simplifica productos de unidades. Esta capa no importa
+   Manim, no lee archivos y no renderiza.
+
+2. application/
+   Combina el dominio para resolver tareas concretas: crear la tabla de
+   sumas, obtener un aporte local, calcular un cambio neto, preparar la
+   antiderivada, describir unidades y validar resultados. Esta capa tampoco
+   conoce Manim ni hace I/O de interfaz.
+
+3. config/problem.py
+   Es la fuente unica de los datos del video: tasas, intervalos, unidades,
+   numero de particiones, capacidad del archivo, ejemplos, creditos y valores
+   esperados para la validacion.
+
+4. presentation/
+   Adapta resultados y configuracion a objetos Manim. components/ comparte
+   constructores de ejes, curvas y unidades; scenes/ contiene una clase
+   renderizable para cada parte del guion. Las escenas solicitan resultados
+   a application/ y se enfocan en dibujar y animar.
+
+5. scripts/render_all.py
+   Comprueba los resultados esperados y luego inicia Manim, en orden, una vez
+   por escena. Si una escena falla, el proceso se detiene y muestra el error.
+
+FLUJO DE EJECUCION
+------------------
+Al iniciar render_all.py:
+  a. Se valida la suma izquierda/derecha, el punto medio, las integrales y
+     la cantidad restante.
+  b. Se crea un proceso Manim por cada escena listada en el orden narrativo.
+  c. Manim importa la clase de escena, construct() pide a application los
+     valores que necesita y los adaptadores de presentation dibujan la escena.
+  d. Manim escribe videos y archivos intermedios en media/.
+
+Fraction mantiene exactos los calculos. La conversion a float se realiza
+solamente en la capa visual, porque las coordenadas graficas son decimales.
+
+ESCENAS
+-------
+Scene1Hook: barra de descarga y pregunta central.
+Scene2ConstantRate: tasa constante y producto tasa por duracion.
+Scene3VariableRate: tasa lineal creciente.
+Scene4SmallContribution: aporte local r(t*) por Delta t y sus unidades.
+Scene5RiemannToIntegral: reglas de Riemann, tabla y refinamiento de la particion.
+Scene6ExactIntegral: antiderivada, resultado, porcentaje y espacio restante.
+Scene7Units: descarga, energia y peticiones de servidor.
+Scene8SignAndClosing: acumulacion negativa y resumen.
+Scene9Credits: grupo, integrantes y referencias.
+
+CAMBIAR PARAMETROS
+------------------
+Edita group14_manim/config/problem.py para cambiar los datos centrales.
+Utiliza fractions.Fraction para las constantes exactas. Actualiza tambien
+EXPECTED_RESULTS y VALIDACION.md si cambias el problema. Los creditos se
+configuran en PROBLEM.contributors y PROBLEM.references.
+
+EJECUCION Y PRUEBAS
+-------------------
+Desde la raiz del proyecto en PowerShell:
+
+  .\.venv\Scripts\python.exe -m pytest -q group14_manim\tests
+  .\.venv\Scripts\python.exe scripts\render_all.py --quality l
+  .\.venv\Scripts\python.exe scripts\render_all.py --quality h
+
+La calidad l es para ensayos y h para el render final. Tambien se puede
+renderizar una sola escena con:
+
+  .\.venv\Scripts\python.exe -m manim -pql group14_manim\presentation\scenes\scene_1_hook.py Scene1Hook
+
+Las escenas que usan MathTex necesitan MiKTeX, latex y dvisvgm.
+
+CARPETA test preliminares
+-------------------------
+Conserva Legacy manim seba, Logica y los resultados de render anteriores.
+Estos elementos no son importados ni usados por la aplicacion vigente.
+Las pruebas automatizadas actuales permanecen junto al paquete en
+group14_manim/tests.

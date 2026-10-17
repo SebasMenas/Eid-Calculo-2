@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Grupo 14: render all (low)",
+      "type": "process",
+      "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+      "args": [
+        "${workspaceFolder}\\scripts\\render_all.py",
+        "--quality",
+        "l"
+      ],
+      "options": {
+        "env": {
+          "PATH": "${env:LOCALAPPDATA}\\Programs\\MiKTeX\\miktex\\bin\\x64;${env:PATH}"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Grupo 14: render all (high)",
+      "type": "process",
+      "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+      "args": [
+        "${workspaceFolder}\\scripts\\render_all.py",
+        "--quality",
+        "h"
+      ],
+      "options": {
+        "env": {
+          "PATH": "${env:LOCALAPPDATA}\\Programs\\MiKTeX\\miktex\\bin\\x64;${env:PATH}"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Grupo 14: run tests",
+      "type": "process",
+      "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+      "args": [
+        "-m",
+        "pytest",
+        "-q",
+        "${workspaceFolder}\\group14_manim\\tests"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}
