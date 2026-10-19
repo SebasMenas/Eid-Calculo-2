@@ -88,4 +88,4 @@ class Scene1Hook(Scene):
             rate_tracker.animate.set_value(rate_plot.end_value),
             run_time=1.5,
         )
-        self.wait(0.3)
+        self.wait(2)

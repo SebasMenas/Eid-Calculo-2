@@ -57,7 +57,7 @@ class Scene2ConstantRate(Scene):
             model,
             float(PROBLEM.positive_axis_min),
             float(PROBLEM.positive_axis_max),
-        ).scale(0.78).shift(DOWN * 0.35)
+        ).scale(0.7).shift(UP * 0.25)
         graph = build_rate_graph(axes, compute_rate_plot(model), model)
         rectangle_start = axes.c2p(float(model.interval.start), 0)
         rectangle_end = axes.c2p(float(duration), float(model.intercept))
@@ -77,10 +77,10 @@ class Scene2ConstantRate(Scene):
         horizontal_brace = Brace(horizontal, DOWN)
         horizontal_label = horizontal_brace.get_tex(f"{format_value(duration)}\\,\\mathrm{{{model.variable_unit}}}")
         vertical = Line(axes.c2p(float(duration), 0), axes.c2p(float(duration), float(model.intercept)))
-        vertical_brace = Brace(vertical, RIGHT)
+        vertical_brace = Brace(vertical, RIGHT).shift(RIGHT * 0.5)
         vertical_label = vertical_brace.get_tex(
             f"{format_value(model.intercept)}\\,\\mathrm{{{model.rate_unit}}}"
-        )
+        ).shift(UP * 0.25)
         self.play(Create(horizontal_brace), FadeIn(horizontal_label), Create(vertical_brace), FadeIn(vertical_label))
 
         equation = MathTex(
@@ -99,4 +99,4 @@ class Scene2ConstantRate(Scene):
         second = equation[4]
         cancellation = Line(second.get_left(), second.get_right(), color=RESULT_GREEN, stroke_width=4)
         self.play(Create(cancellation))
-        self.wait(0.3)
+        self.wait(2)

@@ -71,11 +71,18 @@ PROBLEM = ProblemConfig(
         variable_unit=SECOND,
     ),
     group_name="Grupo 14",
-    contributors=("Integrante 1", "Integrante 2", "Integrante 3"),
+    contributors=(
+        "NICOLÁS FELIPE ARRIAGADA RÍOS",
+        "CRISTIAN EMMANUEL CÁCERES ESCARE",
+        "SEBASTIÁN ESTEBAN MENA FUENTEALBA",
+    ),
     references=(
-        "Stewart, Cálculo: conceptos y contextos.",
-        "OpenStax, Cálculo volumen 1, capítulo 5.",
-        "Manim Community Documentation.",
+        "Larson, R., & Edwards, B. H. (2016). Cálculo: Tomo I (10.ª ed.). Cengage Learning.\n"
+        "Sección 4.3, “Sumas de Riemann e integrales definidas”, pp. 266–276 (inicio: p. 266).\n"
+        "Cita en texto: (Larson & Edwards, 2016, p. 266).",
+        "Thomas, G. B., Weir, M. D., & Hass, J. (2010). Cálculo: Una variable (12.ª ed.). Pearson Educación.\n"
+        "Sección 5.2, “Notación sigma y límites de sumas finitas”, p. 309; sección 5.3, “La integral definida”, p. 316 (ed. en inglés).\n"
+        "Cita en texto: (Thomas et al., 2010, p. 309).",
     ),
 )
 

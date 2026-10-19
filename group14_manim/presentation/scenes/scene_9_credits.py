@@ -28,10 +28,15 @@ class Scene9Credits(Scene):
             Manim llama el método para renderizar los créditos.
         """
         title = Text(PROBLEM.group_name, font_size=42)
-        contributors = Text(" · ".join(PROBLEM.contributors), font_size=25)
+        contributors = VGroup(
+            *(Text(contributor, font_size=25) for contributor in PROBLEM.contributors)
+        ).arrange(DOWN, buff=0.16)
         references = VGroup(
-            *(Text(reference, font_size=18) for reference in PROBLEM.references)
-        ).arrange(DOWN, aligned_edge=LEFT, buff=0.18)
+            *(
+                Text(reference, font_size=15, line_spacing=0.7)
+                for reference in PROBLEM.references
+            )
+        ).arrange(DOWN, aligned_edge=LEFT, buff=0.16)
         content = VGroup(title, contributors, references).arrange(DOWN, buff=0.42)
         self.play(Write(content))
-        self.wait(0.4)
+        self.wait(5)

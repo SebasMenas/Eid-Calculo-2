@@ -15,6 +15,7 @@ from manim import (
     Scene,
     Text,
     UP,
+    UR,
     Write,
 )
 
@@ -56,7 +57,7 @@ class Scene4SmallContribution(Scene):
             rate,
             float(PROBLEM.positive_axis_min),
             float(PROBLEM.positive_axis_max),
-        ).scale(0.78).shift(DOWN * 0.35)
+        ).scale(0.7).shift(UP * 0.25)
         graph = build_rate_graph(axes, compute_rate_plot(rate), rate)
         start = float(sample_interval.start)
         end = float(sample_interval.end)
@@ -90,19 +91,19 @@ class Scene4SmallContribution(Scene):
             rf"={format_value(contribution.sample_rate)}\cdot{format_value(contribution.delta_t)}"
             rf"={format_value(contribution.value)}\,\mathrm{{{contribution.accumulated_unit}}}",
             color=RESULT_GREEN,
-        ).scale(0.85).to_edge(UP).shift(DOWN * 0.75)
+        ).scale(0.85).to_corner(UR).shift(DOWN * 0.95)
         units = MathTex(
             rf"\left({unit_expression(contribution.rate_unit)}\right)"
             rf"\left({unit_expression(contribution.time_unit)}\right)"
             rf"=\mathrm{{{contribution.accumulated_unit}}}"
         ).scale(0.82).to_edge(DOWN)
         message = Text(
-            f"Cada rectángulo aporta una cantidad de {contribution.accumulated_unit}, no solo un área.",
-            font_size=BODY_SIZE,
+            f"El rectángulo aporta {contribution.accumulated_unit}.",
+            font_size=22,
             color=RESULT_GREEN,
-        ).next_to(units, UP)
+        ).move_to([3.9, 0, 0])
         self.play(Write(title), Create(axes), Create(graph))
         self.play(FadeIn(rectangle), Create(sample_line), Create(horizontal_line))
         self.play(Create(interval_line), Create(brace), FadeIn(brace_label))
         self.play(Write(amount_formula), Write(units), FadeIn(message))
-        self.wait(0.4)
+        self.wait(2)

@@ -5,10 +5,12 @@ Ejemplo:
 """
 
 from manim import (
+    AnimationGroup,
     DOWN,
     Arrow,
+    Create,
     FadeIn,
-    Indicate,
+    LaggedStart,
     LEFT,
     Line,
     MathTex,
@@ -19,13 +21,13 @@ from manim import (
     Square,
     Text,
     UP,
-    UP,
     VGroup,
     Write,
 )
 
+from group14_manim.application.compute_exact_integral import compute_exact_integral
 from group14_manim.application.compute_unit_examples import compute_unit_examples
-from group14_manim.config.problem import UNIT_EXAMPLES
+from group14_manim.config.problem import PROBLEM, UNIT_EXAMPLES
 from group14_manim.presentation.components.chart import unit_expression
 from group14_manim.presentation.theme import BODY_SIZE, RATE_BLUE, RESULT_GREEN, TITLE_SIZE
 
@@ -84,31 +86,64 @@ class Scene7Units(Scene):
         """
         examples = compute_unit_examples(UNIT_EXAMPLES)
         title = Text("El significado está en las unidades", font_size=TITLE_SIZE).to_edge(UP)
+        result_value = format(float(compute_exact_integral(PROBLEM.rate).value), "g")
+        headings = VGroup(
+            Text("Contexto", font_size=20),
+            Text("Unidades de la tasa", font_size=20),
+            Text("Tiempo", font_size=20),
+            Text("Resultado", font_size=20),
+        )
+        column_x = (-4.55, -1.15, 2.0, 5.0)
+        for heading, x in zip(headings, column_x):
+            heading.move_to([x, 1.85, 0])
+
         rows = []
-        cancellations = []
-        for example in examples:
+        row_animations = []
+        for index, example in enumerate(examples):
+            rate_unit = MathTex(
+                unit_expression(example.rate_unit),
+                substrings_to_isolate=[r"\mathrm{s}"],
+            )
+            time_unit = MathTex(unit_expression(example.variable_unit))
             context = VGroup(
                 make_context_icon(example.context),
                 Text(example.context, font_size=BODY_SIZE, color=RATE_BLUE),
-            ).arrange(RIGHT, buff=0.12)
-            rate_unit = MathTex(unit_expression(example.rate_unit))
-            time_unit = MathTex(unit_expression(example.variable_unit))
-            result_unit = MathTex(unit_expression(example.accumulated_unit), color=RESULT_GREEN)
-            product = MathTex(r"\cdot")
-            equals = MathTex("=")
-            row = VGroup(context, rate_unit, product, time_unit, equals, result_unit).arrange(RIGHT, buff=0.28)
+            ).arrange(RIGHT, buff=0.12).move_to([column_x[0], 0.85 - index * 1.05, 0])
+            row = VGroup(
+                context,
+                rate_unit.move_to([column_x[1], 0.85 - index * 1.05, 0]),
+                time_unit.move_to([column_x[2], 0.85 - index * 1.05, 0]),
+                MathTex(
+                    rf"{result_value}\,\mathrm{{{example.accumulated_unit}}}",
+                    color=RESULT_GREEN,
+                ).move_to([column_x[3], 0.85 - index * 1.05, 0]),
+            )
             rows.append(row)
+            row_parts = [FadeIn(row)]
             if any(symbol == "s" and power < 0 for symbol, power in example.rate_unit.dimensions):
                 seconds = rate_unit.get_part_by_tex(r"\mathrm{s}")
-                cancellations.append(seconds)
-        VGroup(*rows).arrange(DOWN, aligned_edge=LEFT, buff=0.55).move_to([0, 0.35, 0])
+                row_parts.append(
+                    Create(
+                        Line(
+                            seconds.get_left(),
+                            seconds.get_right(),
+                            color=RESULT_GREEN,
+                            stroke_width=3,
+                        )
+                    )
+                )
+            row_animations.append(AnimationGroup(*row_parts, lag_ratio=0.2))
         formula = MathTex(
-            r"[\text{integral}]=[\text{tasa}]\times[\text{variable}]",
+            r"\text{Integral}=\text{tasa}\times\text{tiempo}",
             color=RESULT_GREEN,
-        ).scale(0.82).to_edge(DOWN)
+        ).scale(0.9).to_edge(DOWN, buff=0.45)
         self.play(Write(title))
-        self.play(*[FadeIn(row) for row in rows], lag_ratio=0.25)
-        for seconds in cancellations:
-            self.play(Indicate(seconds, color=RESULT_GREEN), run_time=0.45)
+        self.play(FadeIn(headings))
+        self.play(
+            LaggedStart(
+                *row_animations,
+                lag_ratio=0.65,
+            )
+        )
         self.play(Write(formula))
-        self.wait(0.3)
+        self.wait(2)

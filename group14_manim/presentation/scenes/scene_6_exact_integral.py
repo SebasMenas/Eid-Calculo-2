@@ -130,4 +130,4 @@ class Scene6ExactIntegral(Scene):
             FadeIn(remaining_label),
         )
         self.play(Write(state_equation))
-        self.wait(0.3)
+        self.wait(2)

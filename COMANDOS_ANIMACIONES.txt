@@ -1,0 +1,62 @@
+COMANDOS PARA RENDERIZAR LAS ANIMACIONES
+========================================
+
+Ejecuta estos comandos en PowerShell desde la carpeta raiz del proyecto:
+Eid-Calculo-2. Usa el script render_all.py: este agrega MiKTeX al PATH de
+Manim automaticamente y verifica que latex y dvisvgm esten disponibles.
+
+REQUISITOS
+----------
+El entorno virtual debe estar creado, las dependencias instaladas y MiKTeX
+instalado. Si MiKTeX falta o no tiene latex/dvisvgm, el script mostrara un
+mensaje de error claro antes de iniciar el render.
+
+ENSAYO: CALIDAD BAJA, ABRE EL VIDEO AL TERMINAR
+-----------------------------------------------
+
+1. Inicio y pregunta
+.\.venv\Scripts\python.exe .\scripts\render_all.py --scene Scene1Hook --quality l --preview
+
+2. Tasa constante
+.\.venv\Scripts\python.exe .\scripts\render_all.py --scene Scene2ConstantRate --quality l --preview
+
+3. Tasa variable
+.\.venv\Scripts\python.exe .\scripts\render_all.py --scene Scene3VariableRate --quality l --preview
+
+4. Aporte pequeno
+.\.venv\Scripts\python.exe .\scripts\render_all.py --scene Scene4SmallContribution --quality l --preview
+
+5. Sumas de Riemann e integral
+.\.venv\Scripts\python.exe .\scripts\render_all.py --scene Scene5RiemannToIntegral --quality l --preview
+
+6. Integral exacta
+.\.venv\Scripts\python.exe .\scripts\render_all.py --scene Scene6ExactIntegral --quality l --preview
+
+7. Unidades
+.\.venv\Scripts\python.exe .\scripts\render_all.py --scene Scene7Units --quality l --preview
+
+8. Signo y cierre
+.\.venv\Scripts\python.exe .\scripts\render_all.py --scene Scene8SignAndClosing --quality l --preview
+
+9. Creditos
+.\.venv\Scripts\python.exe .\scripts\render_all.py --scene Scene9Credits --quality l --preview
+
+RENDER FINAL: CALIDAD ALTA
+--------------------------
+Para obtener el render final de una escena, ejecuta su comando de ensayo
+cambiando --quality l por --quality h. Por ejemplo, para la escena 1:
+
+.\.venv\Scripts\python.exe .\scripts\render_all.py --scene Scene1Hook --quality h --preview
+
+El mismo cambio se aplica a cada una de las nueve escenas.
+Para no abrir el reproductor al terminar, omite --preview.
+
+RENDERIZAR TODAS LAS ESCENAS EN ORDEN
+-------------------------------------
+Estos comandos renderizan el video completo. No abren un reproductor por
+cada escena:
+
+.\.venv\Scripts\python.exe .\scripts\render_all.py --quality l
+.\.venv\Scripts\python.exe .\scripts\render_all.py --quality h
+
+Los videos generados se guardan dentro de media\videos\.

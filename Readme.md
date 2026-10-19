@@ -40,6 +40,7 @@ requirements.txt                       # Versiones comprobadas de Manim y pytest
 VALIDACION.md                          # Cálculos exactos y revisión lógica
 Readme.md                              # Esta guía
 FUNCIONAMIENTO_APLICACION.txt          # Explicación del flujo y las capas
+COMANDOS_ANIMACIONES.txt               # Comandos individuales para las nueve escenas
 test preliminares/
 ├── Legacy manim seba/                 # Escenas exploratorias del prototipo
 ├── Logica/                            # Modelo y prueba manual anteriores
@@ -95,21 +96,28 @@ esperados y la revisión de lógica están registrados en [VALIDACION.md](./VALI
 
 ## Renderizar escenas
 
-Ejecuta los comandos desde la raíz del repositorio. Durante el ensayo usa
-`-pql` (calidad baja y abre el video al terminar); para el render final cambia
-`-pql` por `-pqh` (calidad alta). Los nuevos MP4 se generan bajo
-`media/videos/`; los renders históricos están en `test preliminares/media/`.
+Ejecuta los comandos desde la raíz del repositorio. El script de render agrega
+MiKTeX al `PATH` del proceso y comprueba que `latex` y `dvisvgm` estén
+disponibles, evitando el error `FileNotFoundError` al crear textos matemáticos.
+Usa `--quality l` para el ensayo y `--quality h` para el render final; agrega
+`--preview` si quieres abrir el video al terminar. Los nuevos MP4 se generan
+bajo `media/videos/`; los renders históricos están en `test preliminares/media/`.
+La composición está ajustada al encuadre panorámico 16:9; el render final de
+Manim en calidad alta usa la resolución estándar de 1920×1080.
+El archivo [COMANDOS_ANIMACIONES.txt](./COMANDOS_ANIMACIONES.txt) contiene
+comandos individuales listos para copiar y los comandos para renderizar las
+nueve escenas en orden.
 
 ```powershell
-.\.venv\Scripts\python.exe -m manim -pql group14_manim\presentation\scenes\scene_1_hook.py Scene1Hook
-.\.venv\Scripts\python.exe -m manim -pql group14_manim\presentation\scenes\scene_2_constant_rate.py Scene2ConstantRate
-.\.venv\Scripts\python.exe -m manim -pql group14_manim\presentation\scenes\scene_3_variable_rate.py Scene3VariableRate
-.\.venv\Scripts\python.exe -m manim -pql group14_manim\presentation\scenes\scene_4_small_contribution.py Scene4SmallContribution
-.\.venv\Scripts\python.exe -m manim -pql group14_manim\presentation\scenes\scene_5_riemann_to_integral.py Scene5RiemannToIntegral
-.\.venv\Scripts\python.exe -m manim -pql group14_manim\presentation\scenes\scene_6_exact_integral.py Scene6ExactIntegral
-.\.venv\Scripts\python.exe -m manim -pql group14_manim\presentation\scenes\scene_7_units.py Scene7Units
-.\.venv\Scripts\python.exe -m manim -pql group14_manim\presentation\scenes\scene_8_sign_and_closing.py Scene8SignAndClosing
-.\.venv\Scripts\python.exe -m manim -pql group14_manim\presentation\scenes\scene_9_credits.py Scene9Credits
+.\.venv\Scripts\python.exe scripts\render_all.py --scene Scene1Hook --quality l --preview
+.\.venv\Scripts\python.exe scripts\render_all.py --scene Scene2ConstantRate --quality l --preview
+.\.venv\Scripts\python.exe scripts\render_all.py --scene Scene3VariableRate --quality l --preview
+.\.venv\Scripts\python.exe scripts\render_all.py --scene Scene4SmallContribution --quality l --preview
+.\.venv\Scripts\python.exe scripts\render_all.py --scene Scene5RiemannToIntegral --quality l --preview
+.\.venv\Scripts\python.exe scripts\render_all.py --scene Scene6ExactIntegral --quality l --preview
+.\.venv\Scripts\python.exe scripts\render_all.py --scene Scene7Units --quality l --preview
+.\.venv\Scripts\python.exe scripts\render_all.py --scene Scene8SignAndClosing --quality l --preview
+.\.venv\Scripts\python.exe scripts\render_all.py --scene Scene9Credits --quality l --preview
 ```
 
 Para renderizar todo el video en orden, sin abrir nueve reproductores:
@@ -119,7 +127,8 @@ Para renderizar todo el video en orden, sin abrir nueve reproductores:
 .\.venv\Scripts\python.exe scripts\render_all.py --quality h
 ```
 
-El script detiene el proceso e informa el error si falla alguna escena.
+El mismo script permite renderizar una escena individual con `--scene`. Detiene
+el proceso e informa el error si falla una escena o si no encuentra LaTeX.
 
 ## Cambiar datos del problema
 

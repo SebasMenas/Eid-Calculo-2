@@ -10,6 +10,7 @@ from manim import (
     FadeIn,
     LEFT,
     MathTex,
+    RIGHT,
     Scene,
     Text,
     Transform,
@@ -59,15 +60,15 @@ class Scene5RiemannToIntegral(Scene):
             float(PROBLEM.positive_axis_min),
             float(PROBLEM.positive_axis_max),
         )
-        axes.scale(0.64).shift(LEFT * 3.2 + DOWN * 0.35)
+        axes.scale(0.56).shift(LEFT * 3.2 + DOWN * 0.35)
         graph = build_rate_graph(axes, compute_rate_plot(rate), rate)
         title = Text("De los aportes a la suma", font_size=TITLE_SIZE).to_edge(UP)
         formula = MathTex(
             r"\sum_i r(t_i^*)\,\Delta t",
             r"\longrightarrow",
             rf"\int_{{{format_value(rate.interval.start)}}}^{{{format_value(rate.interval.end)}}}r(t)\,dt",
-        ).to_edge(UP).shift(DOWN * 0.7)
-        function_name = rate_label(rate).scale(0.72).to_corner(UR)
+        ).next_to(title, DOWN, buff=0.2)
+        function_name = rate_label(rate).scale(0.72).to_corner(UR).shift(DOWN * 1.2)
         rectangles = axes.get_riemann_rectangles(
             graph,
             x_range=[float(rate.interval.start), float(rate.interval.end)],
@@ -94,22 +95,29 @@ class Scene5RiemannToIntegral(Scene):
             )
             self.play(Transform(rectangles, target), run_time=0.35)
 
-        rows = []
-        for result in table.rows:
-            rows.append(
-                MathTex(
-                    f"{result.n}",
-                    format_value(result.left),
-                    format_value(result.right),
-                    format_value(result.midpoint),
-                ).scale(0.65)
-            )
-        headings = Text("n     Izq.     Der.     Medio", font_size=19)
-        table_group = VGroup(headings, *rows).arrange(DOWN, aligned_edge=LEFT, buff=0.15)
-        table_group.to_corner(UR).shift(DOWN * 1.8)
+        column_values = (
+            [str(result.n) for result in table.rows],
+            [format_value(result.left) for result in table.rows],
+            [format_value(result.right) for result in table.rows],
+            [format_value(result.midpoint) for result in table.rows],
+        )
+        columns = [
+            VGroup(
+                Text(heading, font_size=19),
+                *(MathTex(value).scale(0.75) for value in values),
+            ).arrange(DOWN, aligned_edge=LEFT, buff=0.15)
+            for heading, values in zip(("n", "Izq.", "Der.", "Medio"), column_values)
+        ]
+        VGroup(*columns).arrange(RIGHT, aligned_edge=UP, buff=0.3)
+        VGroup(*columns).to_corner(UR).shift(DOWN * 2.25)
+        headings = VGroup(*(column[0] for column in columns))
+        rows = [
+            VGroup(*(column[index + 1] for column in columns))
+            for index in range(len(table.rows))
+        ]
+        self.play(FadeIn(headings), run_time=0.25)
         for row in rows:
             self.play(Write(row), run_time=0.25)
-        self.play(FadeIn(headings), run_time=0.25)
 
         self.remove(rectangles)
         # always_redraw actualiza los rectángulos al animar el cambio de Δt.
@@ -127,4 +135,4 @@ class Scene5RiemannToIntegral(Scene):
         self.add(dynamic_rectangles)
         self.play(dx_tracker.animate.set_value(float(table.rows[1].delta_t)), run_time=0.45)
         self.play(dx_tracker.animate.set_value(float(table.rows[2].delta_t)), run_time=0.7)
-        self.wait(0.3)
+        self.wait(2)

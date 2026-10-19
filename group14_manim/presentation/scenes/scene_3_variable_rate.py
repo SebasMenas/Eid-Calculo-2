@@ -14,7 +14,6 @@ from manim import (
     Text,
     Transform,
     UP,
-    UR,
     Write,
 )
 
@@ -55,7 +54,7 @@ class Scene3VariableRate(Scene):
         old_graph = build_rate_graph(axes, compute_rate_plot(constant), constant)
         graph = build_rate_graph(axes, compute_rate_plot(rate), rate)
         title = Text("Ahora la tasa cambia con el tiempo", font_size=TITLE_SIZE).to_edge(UP)
-        formula = rate_label(rate).to_corner(UR)
+        formula = rate_label(rate).next_to(title, DOWN, buff=0.25)
         rate_plot = compute_rate_plot(rate)
         initial = Dot(axes.c2p(rate_plot.start_time, rate_plot.start_value), color=RATE_BLUE)
         final = Dot(axes.c2p(rate_plot.end_time, rate_plot.end_value), color=RATE_BLUE)
@@ -63,7 +62,7 @@ class Scene3VariableRate(Scene):
             MathTex(
                 rf"({format_value(start)},{format_value(rate_plot.start_value)})",
                 color=RATE_BLUE,
-            ).next_to(initial, DOWN),
+            ).next_to(initial, UP),
             MathTex(
                 rf"({format_value(end)},{format_value(rate_plot.end_value)})",
                 color=RATE_BLUE,
@@ -72,4 +71,4 @@ class Scene3VariableRate(Scene):
         self.play(Write(title), Create(axes), Create(old_graph))
         self.play(Transform(old_graph, graph), FadeIn(formula), FadeIn(initial), FadeIn(final))
         self.play(FadeIn(labels[0]), FadeIn(labels[1]))
-        self.wait(0.3)
+        self.wait(2)
